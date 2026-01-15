@@ -101,8 +101,12 @@ export default async function handler(req, res) {
       `${p.section} ${p.numero} (${p.surface} m²)`
     ).join('\n') || 'Non renseigné'
 
-    // Format project info for description
-    const projetInfo = `
+    // Combine all info in detail_parcelles
+    const fullDetails = `
+PARCELLES:
+${parcellesInfo}
+
+PROJET:
 Topographie: ${projet?.topographie || 'Non renseigné'}
 Type de bien: ${projet?.typeBien || 'Non renseigné'}
 Viabilisation: ${projet?.viabilisation || 'Non renseigné'}
@@ -110,7 +114,6 @@ Accès: ${projet?.acces || 'Non renseigné'}
 Description: ${projet?.description || 'Aucune description'}
 
 Documents: ${documents?.length > 0 ? documents.map(d => d.name).join(', ') : 'Aucun document'}
-
 Date de soumission: ${new Date().toLocaleString('fr-FR')}
     `.trim()
 
@@ -121,9 +124,7 @@ Date de soumission: ${new Date().toLocaleString('fr-FR')}
         adresse_terrain: address?.label || 'Non renseignée',
         coordonnees_gps: address ? `${address.lat}, ${address.lng}` : 'N/A',
         surface_totale: surfaceTotale || 0,
-        parcelles_detail: parcellesInfo,
-        // Use existing property for project description
-        message_formulaire: projetInfo,
+        detail_parcelles: fullDetails,
       }
     }
 
